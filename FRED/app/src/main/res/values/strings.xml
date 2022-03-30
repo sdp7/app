@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">FRED</string>
+    <string name="welcome_using_the_fred">Welcome Using The FRED</string>
+    <string name="todo">TODO</string>
+    <string name="incorrect_hint">Incorrect host address or port.</string>
+    <string name="empty"></string>
+</resources>
