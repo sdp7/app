@@ -1,5 +1,6 @@
 package com.example.fred;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Debug;
@@ -7,6 +8,8 @@ import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import ch.aplu.tcpcom.*;
@@ -15,6 +18,7 @@ public class UserControl extends AppCompatActivity implements JoystickView.Joyst
 
     TCPClient tcpClient;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +39,16 @@ public class UserControl extends AppCompatActivity implements JoystickView.Joyst
             tcpClient.disconnect();
             Intent intent = new Intent(UserControl.this,MainActivity.class);
             startActivity(intent);
+        });
+
+        Button shot_button = findViewById(R.id.shot_button);
+        shot_button.setOnTouchListener((v, event) -> {
+            Button theButton = findViewById(R.id.shot_button);
+            if(event.getAction() == MotionEvent.ACTION_DOWN){
+                tcpClient.sendMessage("Shot;true;1");
+            }else if(event.getAction() == MotionEvent.ACTION_UP)
+                tcpClient.sendMessage("Shot;false;0");
+            return false;
         });
     }
 
