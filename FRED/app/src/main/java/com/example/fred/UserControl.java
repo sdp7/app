@@ -17,6 +17,7 @@ import ch.aplu.tcpcom.*;
 public class UserControl extends AppCompatActivity implements JoystickView.JoystickListener{
 
     TCPClient tcpClient;
+    public boolean isAuto = true;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -31,6 +32,7 @@ public class UserControl extends AppCompatActivity implements JoystickView.Joyst
         boolean connectionSuccess = tcpClient.connect(5);
         if(connectionSuccess){
             Log.i("connection","connected");
+            tcpClient.sendMessage("Control;false;0");
         }else{
             Log.i("connection","failed");
         }
@@ -44,11 +46,28 @@ public class UserControl extends AppCompatActivity implements JoystickView.Joyst
         Button shot_button = findViewById(R.id.shot_button);
         shot_button.setOnTouchListener((v, event) -> {
             Button theButton = findViewById(R.id.shot_button);
-            if(event.getAction() == MotionEvent.ACTION_DOWN){
-                tcpClient.sendMessage("Shot;true;1");
-            }else if(event.getAction() == MotionEvent.ACTION_UP)
-                tcpClient.sendMessage("Shot;false;0");
+            if(tcpClient.isConnected()){
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    tcpClient.sendMessage("Shot;true;1");
+                }else if(event.getAction() == MotionEvent.ACTION_UP)
+                    tcpClient.sendMessage("Shot;false;0");
+            }
             return false;
+        });
+
+        Button auto_button = findViewById(R.id.control_button);
+        auto_button.setOnClickListener(v -> {
+            if(connectionSuccess){
+                if(isAuto){
+                    tcpClient.sendMessage("Control;true;1");
+                    auto_button.setText("Human");
+                    isAuto = false;
+                }else{
+                    tcpClient.sendMessage("Control;false;0");
+                    auto_button.setText("Auto");
+                    isAuto = true;
+                }
+            }
         });
     }
 
